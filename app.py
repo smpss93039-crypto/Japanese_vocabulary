@@ -27,7 +27,7 @@ SHEET_ID = "1fu6Lm3J54fo-hYOXmoYwHtylNSKIH8rDd6Syvpc9wuA"
 def get_csv_url(sheet_name):
     return f"https://docs.google.com/spreadsheets/d/{SHEET_ID}/gviz/tq?tqx=out:csv&sheet={sheet_name}"
 
-@st.cache_data
+
 def load_data(sheet_name):
     CSV_URL = get_csv_url(sheet_name)
     r = requests.get(CSV_URL)
