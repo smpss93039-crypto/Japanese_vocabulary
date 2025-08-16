@@ -14,7 +14,7 @@ st.markdown("""
     }
 
     .big-text {
-        font-size: 36px;
+        font-size: 30px;  /* 縮小一級 */
         font-weight: bold;
         margin-bottom: 15px;
     }
@@ -29,20 +29,19 @@ st.markdown("""
         margin-right: 10px;
     }
 
-    /* 往上移整個頁面 */
-    .css-18e3th9 {
-        padding-top: 10px;  /* 原本可能是 50px~，改小讓頁面往上 */
+    /* 往最上方堆整個頁面 */
+    .css-18e3th9, .css-1d391kg {
+        padding-top: 0px !important;
+        margin-top: 0px !important;
     }
     </style>
 """, unsafe_allow_html=True)
-
 
 # ====== Google Sheet 設定 ======
 SHEET_ID = "1fu6Lm3J54fo-hYOXmoYwHtylNSKIH8rDd6Syvpc9wuA"
 
 def get_csv_url(sheet_name):
     return f"https://docs.google.com/spreadsheets/d/{SHEET_ID}/gviz/tq?tqx=out:csv&sheet={sheet_name}"
-
 
 def load_data(sheet_name):
     CSV_URL = get_csv_url(sheet_name)
