@@ -74,7 +74,7 @@ def new_question():
 
     row = df.loc[idx]
     st.session_state.word = row["word"]
-    st.session_state.katakana = row["hiragana"]
+    st.session_state.hiragana = row["hiragana"]
     st.session_state.chinese = row["chinese"]
     st.session_state.example = row["example"]
 
