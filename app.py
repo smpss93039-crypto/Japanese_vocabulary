@@ -19,17 +19,23 @@ st.markdown("""
         margin-bottom: 15px;
     }
 
-    .katakana-line {
-        border-bottom: 2px solid #444; /* 分隔線 */
-        padding-bottom: 5px; /* 線下面的小間距 */
+    .hiragana-line {
+        border-bottom: 2px solid #444;
+        padding-bottom: 5px;
         margin-bottom: 15px;
     }
 
     .emoji {
         margin-right: 10px;
     }
+
+    /* 往上移整個頁面 */
+    .css-18e3th9 {
+        padding-top: 10px;  /* 原本可能是 50px~，改小讓頁面往上 */
+    }
     </style>
 """, unsafe_allow_html=True)
+
 
 # ====== Google Sheet 設定 ======
 SHEET_ID = "1fu6Lm3J54fo-hYOXmoYwHtylNSKIH8rDd6Syvpc9wuA"
@@ -48,7 +54,7 @@ def load_data(sheet_name):
 # ====== 初始化 session state ======
 if "word" not in st.session_state:
     st.session_state.word = None
-    st.session_state.katakana = ""
+    st.session_state.hiragana = ""
     st.session_state.chinese = ""
     st.session_state.example = ""
     st.session_state.used_indices = set()
@@ -68,7 +74,7 @@ def new_question():
 
     row = df.loc[idx]
     st.session_state.word = row["word"]
-    st.session_state.katakana = row["katakana"]
+    st.session_state.katakana = row["hiragana"]
     st.session_state.chinese = row["chinese"]
     st.session_state.example = row["example"]
 
@@ -80,8 +86,8 @@ if st.session_state.word:
     # 第一行：單字
     st.markdown(f"<div class='big-text'>{st.session_state.word}</div>", unsafe_allow_html=True)
 
-    # 第二行：片假名 + 分隔線
-    st.markdown(f"<div class='big-text katakana-line'>{st.session_state.katakana}</div>", unsafe_allow_html=True)
+    # 第二行：平假名 + 分隔線
+    st.markdown(f"<div class='big-text hiragana-line'>{st.session_state.hiragana}</div>", unsafe_allow_html=True)
 
     # 第三行：中文前加 emoji
     st.markdown(f"<div class='big-text'>👉 {st.session_state.chinese}</div>", unsafe_allow_html=True)
