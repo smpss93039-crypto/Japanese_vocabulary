@@ -18,6 +18,16 @@ st.markdown("""
         font-weight: bold;
         margin-bottom: 15px;
     }
+
+    .katakana-line {
+        border-bottom: 2px solid #444; /* 分隔線 */
+        padding-bottom: 5px; /* 線下面的小間距 */
+        margin-bottom: 15px;
+    }
+
+    .emoji {
+        margin-right: 10px;
+    }
     </style>
 """, unsafe_allow_html=True)
 
@@ -27,7 +37,7 @@ SHEET_ID = "1fu6Lm3J54fo-hYOXmoYwHtylNSKIH8rDd6Syvpc9wuA"
 def get_csv_url(sheet_name):
     return f"https://docs.google.com/spreadsheets/d/{SHEET_ID}/gviz/tq?tqx=out:csv&sheet={sheet_name}"
 
-
+@st.cache_data
 def load_data(sheet_name):
     CSV_URL = get_csv_url(sheet_name)
     r = requests.get(CSV_URL)
@@ -36,17 +46,17 @@ def load_data(sheet_name):
     return df
 
 # ====== 初始化 session state ======
-if "question" not in st.session_state:
+if "word" not in st.session_state:
     st.session_state.word = None
     st.session_state.katakana = ""
     st.session_state.chinese = ""
     st.session_state.example = ""
     st.session_state.used_indices = set()
 
-# ====== 載入資料（固定「媽媽的日文」） ======
+# ====== 載入資料 ======
 st.session_state.data = load_data("媽媽的日文")
 
-# ====== 產生新題目（不重複） ======
+# ====== 產生新題目 ======
 def new_question():
     df = st.session_state.data
     available_indices = set(df.index) - st.session_state.used_indices
@@ -57,19 +67,27 @@ def new_question():
     st.session_state.used_indices.add(idx)
 
     row = df.loc[idx]
-    st.session_state.word = row["word"]       # 單字（日文/漢字）
-    st.session_state.katakana = row["katakana"]   # 片假名
-    st.session_state.chinese = row["chinese"]     # 中文意思
-    st.session_state.example = row["example"]     # 日文例句
+    st.session_state.word = row["word"]
+    st.session_state.katakana = row["katakana"]
+    st.session_state.chinese = row["chinese"]
+    st.session_state.example = row["example"]
 
-# ====== 畫面顯示 ======
+# ====== 顯示畫面 ======
 if st.session_state.word is None:
     new_question()
 
 if st.session_state.word:
-    st.markdown(f"<div class='big-text'>{st.session_state.word}</div>", unsafe_allow_html=True)     # 單字
-    st.markdown(f"<div class='big-text'>{st.session_state.katakana}</div>", unsafe_allow_html=True) # 片假名
-    st.markdown(f"<div class='big-text'>{st.session_state.chinese}</div>", unsafe_allow_html=True)  # 中文意思
-    st.markdown(f"<div class='big-text'>{st.session_state.example}</div>", unsafe_allow_html=True)  # 例句
+    # 第一行：單字
+    st.markdown(f"<div class='big-text'>{st.session_state.word}</div>", unsafe_allow_html=True)
 
+    # 第二行：片假名 + 分隔線
+    st.markdown(f"<div class='big-text katakana-line'>{st.session_state.katakana}</div>", unsafe_allow_html=True)
+
+    # 第三行：中文前加 emoji
+    st.markdown(f"<div class='big-text'>👉 {st.session_state.chinese}</div>", unsafe_allow_html=True)
+
+    # 第四行：例句前加 emoji
+    st.markdown(f"<div class='big-text'>👉 {st.session_state.example}</div>", unsafe_allow_html=True)
+
+# 下一頁按鈕
 st.button("下一頁", on_click=new_question)
